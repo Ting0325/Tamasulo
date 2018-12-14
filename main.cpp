@@ -9,11 +9,15 @@ using namespace std;
 class Instruction_status_entry {
 private:
 public:
+    string instruction;
+    int Execution_complete;
+    string Write_result;
     string op;
     string target;
     string j;
     string k;
     int offset;
+    int issue;
     // Constructor with default values for data members
     Instruction_status_entry(string op ,string target ,string j, string k, int offset = 0) {
       this -> op = op;
@@ -34,6 +38,7 @@ public:
     int offset;
     int time; 
     string name;
+    int issue;
     // Constructor with default values for data members
     LD_buffer_entry() {
       cout <<"constructor called"<<'\n';
@@ -131,11 +136,13 @@ int find_empty_LD_buffer_entry(LD_buffer_entry LD_buffer[]);
 int find_empty_ST_buffer_entry(ST_buffer_entry ST_buffer[]);
 int find_empty_AS_reservation_station_entry(Reservation_station_entry_AS Reservation_station_AS[]);
 int find_empty_MD_reservation_station_entry(Reservation_station_entry_MD Reservation_station_MD[]);
+void check_LD_finish(int current_cycle,LD_buffer_entry LD_buffer[],vector <Instruction_status_entry> Instruction_status);
 //global arrays
 //static Reservation_station_entry_AS Reservation_station_AS[3]; // ADD/SUB reservation station
 //static Reservation_station_entry_MD Reservation_station_MD[2]; // MUL/DIV reservation station
 //static Integer_register_entry Integer_register[8]; 
 //static Register_result_status_entry Register_result_status[15];// register result status
+static int next_issue = 0;
 int main() {   
   ofstream myf ("example.txt");
   if (myf.is_open())
@@ -201,12 +208,13 @@ int main() {
    //myf.open("example.txt");
    //myf<<"wrot a line";
    //myf.close();
-   ifstream myfile ("inst2.trace");
+   ifstream myfile ("inst.trace");
 
    if (myfile.is_open())
    {
      while ( getline (myfile,line) )
      {
+       next_issue++;
        cout << line << '\n';
        current_cycle ++;
        location  = line.find(' ');
@@ -233,6 +241,8 @@ int main() {
         cout <<'\n';
         j = "";
         Instruction_status_entry is(op,target,j,k,offset);
+        is.issue = next_issue;
+        is.instruction = line;
         Instruction_status.push_back(is);
         //cout <<"test:" << is.op << '\n';
         if(is.op.compare("LW")==0){  //LD instruction 
@@ -240,6 +250,7 @@ int main() {
           LD_buffer[LD_duffer_index].address = k;
           LD_buffer[LD_duffer_index].offset = offset;
           LD_buffer[LD_duffer_index].time = current_cycle;
+          LD_buffer[LD_duffer_index].issue = next_issue;
           LD_buffer[LD_duffer_index].busy = true;
           Register_result_status[reg_num].FU = LD_buffer[LD_duffer_index].name;
           //cout<<"here"<<'\n';
@@ -256,6 +267,8 @@ int main() {
         k = rest.substr(space_location+4,2);
         offset = 0;
         Instruction_status_entry is(op,target,j,k,offset);
+        is.issue = next_issue;
+        is.instruction = line;
         Instruction_status.push_back(is);
         if(is.op.compare("MUL")==0){
           cout << op <<"   =============================="<<'\n';
@@ -320,6 +333,16 @@ int main() {
         
         cout <<"F"<< i <<"("<< Register_result_status[i].FU<< ") ";
        }
+       //check_LD_finish( current_cycle,LD_buffer , Instruction_status);
+       for(int i = 0 ;i < 3;i++){
+        cout<< i<<"current_cycle - LD_buffer[i].time = " << current_cycle - LD_buffer[i].time <<'\n';
+        if(current_cycle - LD_buffer[i].time == 2){ //check latency;
+          cout<<"execution complete !!!!!     issue:"<< LD_buffer[i].issue<<'\n';
+          LD_buffer[i].busy = false;                //nolonger busy
+          Instruction_status[LD_buffer[i].issue-1].Execution_complete = current_cycle;    //update instruction status
+          //LD_buffer.time = 0;//reset time
+        }
+       }
        cout << '\n';
      }
      myfile.close();
@@ -328,9 +351,12 @@ int main() {
 
    else cout << "Unable to open file"; 
    /*Testing section*/ 
-    cout << "Instruction_status contains:";
+    cout << '\n';
+    cout <<"--------------------------------------------------"<<'\n';   
+    cout << "Instruction_status contains:"<<'\n';
+    cout << "Instruction"<<"   Is "<<"Ex "<<"Wb "<<"Cm "<<'\n';
     for(int i = 0; i < Instruction_status.size();i ++){
-      cout << Instruction_status[i].op << '\n';
+      cout<<Instruction_status[i].instruction<< "   "<<Instruction_status[i].issue<<" "<<Instruction_status[i].Execution_complete<< " wb " << Instruction_status[i].op << '\n';
     }
     cout << LD_buffer[0].busy <<'\n';
     int id = find_empty_LD_buffer_entry(LD_buffer);
@@ -380,6 +406,24 @@ int find_empty_MD_reservation_station_entry(Reservation_station_entry_MD Reserva
     }  
   }
   return id;
+}
+
+void check_LD_finish(int current_cycle,LD_buffer_entry LD_buffer[],vector <Instruction_status_entry> Instruction_status){
+  for(int i = 0 ;i < 3;i++){
+    cout<< i<<"current_cycle - LD_buffer[i].time = " << current_cycle - LD_buffer[i].time <<'\n';
+    if(current_cycle - LD_buffer[i].time == 2){ //check latency;
+    cout<<"execution complete !!!!!     issue:"<< LD_buffer[i].issue<<'\n';
+      LD_buffer[i].busy = false;                //nolonger busy
+      Instruction_status[LD_buffer[i].issue-1].Execution_complete = current_cycle;    //update instruction status
+      //LD_buffer.time = 0;//reset time
+    }
+  }
+}
+
+void print_cycle_table_for_instructions(vector <Instruction_status_entry> Instruction_status){
+  for(int i = 0; i < Instruction_status.size();i++){
+
+  }
 }
 
 /*void find_corespnding_buffer(int id,Register_result_status_entry Register_result_status[]){
