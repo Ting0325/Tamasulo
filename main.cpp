@@ -35,7 +35,9 @@ public:
     int time; 
     string name;
     // Constructor with default values for data members
-    LD_buffer_entry() {}
+    LD_buffer_entry() {
+      cout <<"constructor called"<<'\n';
+    }
     LD_buffer_entry(bool busy , int id) {
       this -> busy = busy;
       this -> id = id;
@@ -91,7 +93,7 @@ class Reservation_station_entry_MD {
 private:
 public://Time Name Busy Op Vj Vk Qj Qk
     int Time;
-    string Name;
+    string Name = "MULT";
     bool busy;
     int id;
     string Op;
@@ -112,6 +114,7 @@ private:
 public:
     string name;
     string FU;
+    //bool waiting;
     Register_result_status_entry(){}
 };
 
@@ -131,44 +134,56 @@ int find_empty_MD_reservation_station_entry(Reservation_station_entry_MD Reserva
 //global arrays
 //static Reservation_station_entry_AS Reservation_station_AS[3]; // ADD/SUB reservation station
 //static Reservation_station_entry_MD Reservation_station_MD[2]; // MUL/DIV reservation station
-static Integer_register_entry Integer_register[7]; 
-static Register_result_status_entry Register_result_status[15];// register result status
+//static Integer_register_entry Integer_register[8]; 
+//static Register_result_status_entry Register_result_status[15];// register result status
 int main() {   
-  /*ofstream myf ("example.txt");
+  ofstream myf ("example.txt");
   if (myf.is_open())
   {
     myf << "This is a line.\n";
-    myf << "This is another line.\n";
+    myf << "This is another line11212.\n";
     myf.close();
   }
-*/
+
    string line;
    vector <Instruction_status_entry> Instruction_status;   // instruction ststus
    LD_buffer_entry LD_buffer[3];                           // load buffer
    ST_buffer_entry ST_buffer[3];                           // store buffer
    Reservation_station_entry_AS Reservation_station_AS[3]; // ADD/SUB reservation station
    Reservation_station_entry_MD Reservation_station_MD[2]; // MUL/DIV reservation station
-   //Register_result_status_entry Register_result_status[15];// register result status
-   //Integer_register_entry Integer_register[7];             // integer registers
+   Register_result_status_entry Register_result_status[15];// register result status
+   Integer_register_entry Integer_register[8];             // integer registers
    /*instantiate reservation stations and buffers*/
    for(int i = 0; i < 3 ; i++){
-     LD_buffer[i] = LD_buffer_entry(false,i);  
+     //LD_buffer[i](false,i);  
+     LD_buffer[i].busy = false;
+     LD_buffer[i].id = i;
+     LD_buffer[i].name = "LOAD"+ to_string(i); 
    }
    for(int i = 0; i < 3 ; i++){
-     ST_buffer[i] = ST_buffer_entry(false,i);
+     //ST_buffer[i] = ST_buffer_entry(false,i);
+     ST_buffer[i].busy = false;
+     ST_buffer[i].id = i;
    }
    for(int i = 0; i < 3 ; i++){
-     Reservation_station_AS[i] = Reservation_station_entry_AS(false,i);
+     //Reservation_station_AS[i] = Reservation_station_entry_AS(false,i);
+     Reservation_station_AS[i].busy = false;
+     Reservation_station_AS[i].id = i;
+     //Reservation_station_AS[i].Name = ;
    }
-   for(int i = 0; i < 3 ; i++){
-     Reservation_station_MD[i] = Reservation_station_entry_MD(false,i);
+   for(int i = 0; i < 2 ; i++){
+     //Reservation_station_MD[i] = Reservation_station_entry_MD(false,i);
+     Reservation_station_MD[i].busy = false;
+     Reservation_station_MD[i].id = i;
+    // cout << "66666666666666"+Reservation_station_MD[i].Name<<'\n';
+     Reservation_station_MD[i].Name = "MULT" + to_string(i);
    }
    for(int i = 0; i < 15 ; i++){
      Register_result_status[i] = Register_result_status_entry();
    }
-   /*for(int i = 0; i < 8; i++){
+   for(int i = 0; i < 8; i++){
      Integer_register[i] = Integer_register_entry();
-   }*/
+   }
    int current_cycle = 0;
    int location;
    string op;
@@ -239,11 +254,40 @@ int main() {
        }else{// ADD/SUB/LD/ST instructions
         j = rest.substr(space_location+1,2);
         k = rest.substr(space_location+4,2);
-        MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
-        Reservation_station_MD[MD_reservation_station_index].Op = op;
-        Reservation_station_MD[MD_reservation_station_index].Vj = "R("+j+")"; //rename register name
+        offset = 0;
+        Instruction_status_entry is(op,target,j,k,offset);
+        Instruction_status.push_back(is);
+        if(is.op.compare("MUL")==0){
+          cout << op <<"   =============================="<<'\n';
+          MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
+          Reservation_station_MD[MD_reservation_station_index].Op = op;
+          cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+        if(LD_buffer[ stoi(Register_result_status[ stoi(j.substr(1))].FU.substr(4)) ].busy){
+          cout << "load is busy  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+          Reservation_station_MD[MD_reservation_station_index].Qj = LD_buffer[stoi(j.substr(1))].name; //waiting for load
+          Reservation_station_MD[MD_reservation_station_index].Vj = "x"; //rename register name
+        }else{
+          Reservation_station_MD[MD_reservation_station_index].Qj = "x"; //rename register name
+          Reservation_station_MD[MD_reservation_station_index].Vj = "R("+j+")"; //rename register name
+        }    
         Reservation_station_MD[MD_reservation_station_index].Vk = "R("+k+")"; //rename register name
         Reservation_station_MD[MD_reservation_station_index].busy = true; 
+        cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
+        Register_result_status[reg_num].FU = Reservation_station_MD[MD_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
+        }
+        /*MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
+        Reservation_station_MD[MD_reservation_station_index].Op = op;
+        cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+        if(LD_buffer[ stoi(Register_result_status[ stoi(j.substr(1))].FU.substr(4)) ].busy){
+          cout << "load is busy  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+          Reservation_station_MD[MD_reservation_station_index].Qj = LD_buffer[stoi(j.substr(1))].name; //waiting for load
+          Reservation_station_MD[MD_reservation_station_index].Vj = "x"; //rename register name
+        }else{
+          Reservation_station_MD[MD_reservation_station_index].Qj = "x"; //rename register name
+          Reservation_station_MD[MD_reservation_station_index].Vj = "R("+j+")"; //rename register name
+        }    
+        Reservation_station_MD[MD_reservation_station_index].Vk = "R("+k+")"; //rename register name
+        Reservation_station_MD[MD_reservation_station_index].busy = true; */
         //Register_result_status[reg_num].FU 
 
         //cout << "cycle: " << current_cycle << '\n';
@@ -253,8 +297,8 @@ int main() {
         //cout << "j: " <<j << '\n';
         //cout << "k: " << k << '\n';
         cout <<'\n';
-        Instruction_status_entry is(op,target,j,k,offset);
-        Instruction_status.push_back(is);
+        //Instruction_status_entry is(op,target,j,k,offset);
+        //Instruction_status.push_back(is);
         //cout <<"test:" << is.op << '\n';
 
        }
@@ -268,7 +312,7 @@ int main() {
        }
        for(int  i = 0; i < 2 ; i++){
           if(Reservation_station_MD[i].busy == true){
-            cout << "MULT[" << Reservation_station_MD[i].id << "]: MULTD "<< Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk <<'\n';
+            cout << "MULT[" << Reservation_station_MD[i].id << "]: MULTD "<< Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk <<'\n';
           }
        }
        cout << "Waiting register:";
@@ -337,6 +381,10 @@ int find_empty_MD_reservation_station_entry(Reservation_station_entry_MD Reserva
   }
   return id;
 }
+
+/*void find_corespnding_buffer(int id,Register_result_status_entry Register_result_status[]){
+  Register_result_status[id].FU = LD_buffer[]
+}*/
 /*
 ofstream myfile ("example.txt");
   if (myfile.is_open())
