@@ -10,7 +10,7 @@ class Instruction_status_entry {
 private:
 public:
     string instruction;
-    int Execution_complete;
+    int Execution_complete = -1;
     string Write_result;
     string op;
     string target;
@@ -19,6 +19,7 @@ public:
     int offset;
     int issue;
     int Wb;
+    int Cm = -1;
     // Constructor with default values for data members
     Instruction_status_entry(string op ,string target ,string j, string k, int offset = 0) {
       this -> op = op;
@@ -178,7 +179,7 @@ int main() {
      //LD_buffer[i](false,i);  
      LD_buffer[i].busy = false;
      LD_buffer[i].id = i;
-     LD_buffer[i].name = "LOAD"+ to_string(i); 
+     LD_buffer[i].name = "LOAD"+ to_string(i+1); 
    }
    for(int i = 0; i < 3 ; i++){
      //ST_buffer[i] = ST_buffer_entry(false,i);
@@ -189,14 +190,14 @@ int main() {
      //Reservation_station_AS[i] = Reservation_station_entry_AS(false,i);
      Reservation_station_AS[i].busy = false;
      Reservation_station_AS[i].id = i;
-     Reservation_station_AS[i].Name = "ADD"+ to_string(i);
+     Reservation_station_AS[i].Name = "ADD"+ to_string(i+1);
    }
    for(int i = 0; i < 2 ; i++){
      //Reservation_station_MD[i] = Reservation_station_entry_MD(false,i);
      Reservation_station_MD[i].busy = false;
      Reservation_station_MD[i].id = i;
     // cout << "66666666666666"+Reservation_station_MD[i].Name<<'\n';
-     Reservation_station_MD[i].Name = "MULT" + to_string(i);
+     Reservation_station_MD[i].Name = "MULT" + to_string(i+1);
    }
    for(int i = 0; i < 15 ; i++){
      Register_result_status[i] = Register_result_status_entry();
@@ -373,6 +374,7 @@ int main() {
           //Reservation_station_MD[MD_reservation_station_index].Vk = "R("+k+")"; //rename register name
           Reservation_station_MD[MD_reservation_station_index].Time = 0;
           Reservation_station_MD[MD_reservation_station_index].busy = true; 
+          Reservation_station_MD[MD_reservation_station_index].target = reg_num;
           cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
           Register_result_status[reg_num].FU = Reservation_station_MD[MD_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
           Register_result_status[reg_num].used = true;
@@ -525,23 +527,31 @@ int main() {
             Reservation_station_MD[i].Time --;
           }
        }
+       //check if we can commit an instruction result
+       /*for(int i = 0;i < 6;i++){
+         if(Instruction_status[i].Execution_complete == -1){
+           break;
+         }else if(Instruction_status[i].Cm == -1 && Instruction_status[i].Execution_complete!=-1){
+           Instruction_status[i].Cm = current_cycle ;
+         }
+       }*/
        /* cycle snapshot section */
        cout << "---------------" << '\n';
        cout << "Cycle " << current_cycle << '\n';
        for(int i = 0;i < 3 ;i++){
          if(LD_buffer[i].busy == true){
-           cout << "LOAD[" << LD_buffer[i].id << "]: "<< LD_buffer[i].address << "(" << LD_buffer[i].offset << ")(time:" <<LD_buffer[i].time <<")\n"; 
+           cout << "LOAD[" << LD_buffer[i].id + 1<< "]: "<< LD_buffer[i].address << "(" << LD_buffer[i].offset << ")(time:" <<LD_buffer[i].time <<")\n"; 
          }
        }
       for(int  i = 0; i < 3 ; i++){
           if(Reservation_station_AS[i].busy == true){
-            cout << "ADD[" << Reservation_station_AS[i].id << "]: SUBD "<< Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< "Time: "<< Reservation_station_AS[i].Time <<'\n';
+            cout << "ADD[" << Reservation_station_AS[i].id + 1 << "]: "<< Reservation_station_AS[i].Op<< "D " << Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< "Time: "<< Reservation_station_AS[i].Time <<'\n';
           }
        }
        cout<<"**************************"<<"Register_result_status[2].FU: "<<Register_result_status[2].FU<<'\n';
       for(int  i = 0; i < 2 ; i++){
           if(Reservation_station_MD[i].busy == true){
-            cout << "MULT[" << Reservation_station_MD[i].id << "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< "Time: "<<Reservation_station_MD[i].Time <<'\n';
+            cout << "MULT[" << Reservation_station_MD[i].id + 1<< "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< "Time: "<<Reservation_station_MD[i].Time <<'\n';
           }
        }
        cout << "Waiting register:";
@@ -635,7 +645,7 @@ int main() {
             }else{//"DIV"
               Register_result_status[Reservation_station_MD[i].target].FU = "M(" + Reservation_station_MD[i].Vj +")/M("+Reservation_station_MD[i].Vk+")";
             }
-            cout <<"FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_MD[i].issue<<" finished at cycle"<< current_cycle << '\n';
+            cout <<"FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_MD[i].issue<<" finished at cycle"<< current_cycle<< "target:" << Reservation_station_MD[i].target<< '\n';
           }
        }
       //don't forget to update reservation stations !!!(may also start some executions)XX-nevermind ==
@@ -666,23 +676,31 @@ int main() {
           }
         }
       } 
+      //check if we can commit an instruction result
+      /*for(int i = 0;i < 6;i++){
+         if(Instruction_status[i].Execution_complete == -1){
+           break;
+         }else if(Instruction_status[i].Cm == -1 && Instruction_status[i].Execution_complete!=-1){
+           Instruction_status[i].Cm = current_cycle;
+         }
+       }*/
       /* cycle snapshot section */
        cout << "---------------" << '\n';
        cout << "Cycle " << current_cycle << '\n';
        for(int i = 0;i < 3 ;i++){
          if(LD_buffer[i].busy == true){
-           cout << "LOAD[" << LD_buffer[i].id << "]: "<< LD_buffer[i].address << "(" << LD_buffer[i].offset << ")(time:" <<LD_buffer[i].time <<")\n"; 
+           cout << "LOAD[" << LD_buffer[i].id + 1 << "]: "<< LD_buffer[i].address << "(" << LD_buffer[i].offset << ")(time:" <<LD_buffer[i].time <<")\n"; 
          }
        }
       for(int  i = 0; i < 3 ; i++){
           if(Reservation_station_AS[i].busy == true){
-            cout << "ADD[" << Reservation_station_AS[i].id << "]: SUBD "<< Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< " Time: "<< Reservation_station_AS[i].Time <<'\n';
+            cout << "ADD[" << Reservation_station_AS[i].id + 1<< "]: "<< Reservation_station_AS[i].Op<< "D "<< Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< " Time: "<< Reservation_station_AS[i].Time <<'\n';
           }
        }
        //cout<<"**************************"<<"Register_result_status[2].FU: "<<Register_result_status[2].FU<<'\n';
       for(int  i = 0; i < 2 ; i++){
           if(Reservation_station_MD[i].busy == true){
-            cout << "MULT[" << Reservation_station_MD[i].id << "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< " Time: "<<Reservation_station_MD[i].Time <<'\n';
+            cout << "MULT[" << Reservation_station_MD[i].id + 1<< "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< " Time: "<<Reservation_station_MD[i].Time <<'\n';
           }
        }
        cout << "Waiting register:";
@@ -693,6 +711,11 @@ int main() {
        }
        cout<< '\n';
    }
+   /*handle Cm*/
+   Instruction_status[0].Cm = Instruction_status[0].Execution_complete + 2;
+   for(int i = 1;i < 6;i++){
+     Instruction_status[i].Cm = (Instruction_status[i].Execution_complete + 2)>=(Instruction_status[i-1].Execution_complete + 3)?(Instruction_status[i].Execution_complete + 2):(Instruction_status[i-1].Execution_complete + 3);
+   } 
     /*stage 3 starts here*/
    /*Testing section*/ /*final dump*/
     cout << '\n';
@@ -700,7 +723,7 @@ int main() {
     cout << "Instruction_status contains:"<<'\n';
     cout << "Instruction      "<<"Is      "<<"Ex      "<<"Wb      "<<"Cm      "<<'\n';
     for(int i = 0; i < Instruction_status.size();i ++){
-      cout<<Instruction_status[i].instruction<< "      "<<Instruction_status[i].issue<<"      "<<Instruction_status[i].Execution_complete<< "      " <<Instruction_status[i].Wb <<"      "<< Instruction_status[i].op << '\n';
+      cout<<Instruction_status[i].instruction<< "      "<<Instruction_status[i].issue<<"      "<<Instruction_status[i].Execution_complete<< "      " <<Instruction_status[i].Wb <<"      "<< Instruction_status[i].Cm << '\n';
     }
     cout << LD_buffer[0].busy <<'\n';
     int id = find_empty_LD_buffer_entry(LD_buffer);
