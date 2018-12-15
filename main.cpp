@@ -230,7 +230,7 @@ int main() {
      while ( getline (myfile,line) )
      {
        next_issue++;
-       cout << line <<" issue: "<< next_issue<< '\n';
+      // cout << line <<" issue: "<< next_issue<< '\n';
        current_cycle ++;
        location  = line.find(' ');
        op = line.substr(0,location);
@@ -259,7 +259,7 @@ int main() {
         is.issue = next_issue;
         is.instruction = line;
         Instruction_status.push_back(is);
-        cout << "Instruction_status added "<<Instruction_status.size()-1<<" " <<Instruction_status[Instruction_status.size()-1].instruction<<" issue" << is.issue<<'\n';
+     //   cout << "Instruction_status added "<<Instruction_status.size()-1<<" " <<Instruction_status[Instruction_status.size()-1].instruction<<" issue" << is.issue<<'\n';
         //cout <<"test:" << is.op << '\n';
         if(is.op.compare("LW")==0){  //LD instruction 
           LD_duffer_index = find_empty_LD_buffer_entry(LD_buffer);
@@ -290,15 +290,15 @@ int main() {
         is.instruction = line;
         Instruction_status.push_back(is);
         if(is.op.compare("MUL")==0){
-          cout << op <<"   =============================="<<'\n';
+   //       cout << op <<"   =============================="<<'\n';
           MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
           Reservation_station_MD[MD_reservation_station_index].issue = is.issue;
           Reservation_station_MD[MD_reservation_station_index].Op = op;
           Reservation_station_MD[MD_reservation_station_index].j = stoi(j.substr(1));
           Reservation_station_MD[MD_reservation_station_index].k = stoi(k.substr(1));
-          cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+   //       cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
           if(LD_buffer[ stoi(Register_result_status[ stoi(j.substr(1))].FU.substr(4)) ].busy){
-            cout << "load is busy  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+   //         cout << "load is busy  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
             Reservation_station_MD[MD_reservation_station_index].Qj = Register_result_status[ stoi(j.substr(1))].FU;//LD_buffer[stoi(j.substr(1))].name; //waiting for load
             Reservation_station_MD[MD_reservation_station_index].Vj = "x"; //rename register name
           }else{
@@ -309,29 +309,29 @@ int main() {
           Reservation_station_MD[MD_reservation_station_index].Time = 0;//10;
           Reservation_station_MD[MD_reservation_station_index].busy = true;
           Reservation_station_MD[MD_reservation_station_index].target = reg_num;
-          cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
+   //       cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
           Register_result_status[reg_num].FU = Reservation_station_MD[MD_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
           Register_result_status[reg_num].used = true;
         }else if(is.op.compare("SUB")==0){
-          cout << op <<"   =============================="<<'\n';
+  //        cout << op <<"   =============================="<<'\n';
           AS_reservation_station_index = find_empty_AS_reservation_station_entry(Reservation_station_AS);
           Reservation_station_AS[AS_reservation_station_index].issue = is.issue;
           Reservation_station_AS[AS_reservation_station_index].Op = op;
-          cout << "j : "<< j  <<"stoi(j.substr(1)) : " <<stoi(j.substr(1))<<"look over here"<<'\n';
+  //        cout << "j : "<< j  <<"stoi(j.substr(1)) : " <<stoi(j.substr(1))<<"look over here"<<'\n';
           Reservation_station_AS[AS_reservation_station_index].j = stoi(j.substr(1));
           Reservation_station_AS[AS_reservation_station_index].k = stoi(k.substr(1));
-          cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+  //        cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
           if(Register_result_status[ stoi(j.substr(1))].waiting){
-            cout << "reg is waiting  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+  //          cout << "reg is waiting  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
             Reservation_station_AS[AS_reservation_station_index].Qj = Register_result_status[ stoi(j.substr(1))].FU;//LD_buffer[stoi(j.substr(1))].name; //waiting for load
             Reservation_station_AS[AS_reservation_station_index].Vj = "x"; //rename register name
           }else{
             Reservation_station_AS[AS_reservation_station_index].Qj = "x"; //rename register name
             Reservation_station_AS[AS_reservation_station_index].Vj =  Register_result_status[ stoi(j.substr(1))].FU; 
           }    
-          cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+  //        cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
           if(Register_result_status[ stoi(k.substr(1))].waiting){
-            cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+  //          cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
             Reservation_station_AS[AS_reservation_station_index].Qk = Register_result_status[ stoi(k.substr(1))].FU;//LD_buffer[stoi(k.substr(1))].name; //waiting for load
             Reservation_station_AS[AS_reservation_station_index].Vk = "x"; //rename register name
           }else{
@@ -343,28 +343,28 @@ int main() {
           Reservation_station_AS[AS_reservation_station_index].Time = 0;//1;
           Reservation_station_AS[AS_reservation_station_index].busy = true; 
           Reservation_station_AS[AS_reservation_station_index].target = reg_num;
-          cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_AS[AS_reservation_station_index].Name <<'\n';
+  //        cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_AS[AS_reservation_station_index].Name <<'\n';
           Register_result_status[reg_num].FU = Reservation_station_AS[AS_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
           Register_result_status[reg_num].used = true;
         }else if(is.op.compare("DIV")==0){
-          cout << op <<"   =============================="<<'\n';
+  //        cout << op <<"   =============================="<<'\n';
           MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
           Reservation_station_MD[MD_reservation_station_index].issue = is.issue;
           Reservation_station_MD[MD_reservation_station_index].Op = op;
           Reservation_station_MD[MD_reservation_station_index].j = stoi(j.substr(1));
           Reservation_station_MD[MD_reservation_station_index].k = stoi(k.substr(1));
-          cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+  //        cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
           if(Register_result_status[ stoi(j.substr(1))].waiting){
-            cout << "load is busy  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+  //          cout << "load is busy  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
             Reservation_station_MD[MD_reservation_station_index].Qj = Register_result_status[ stoi(j.substr(1))].FU;;//LD_buffer[stoi(j.substr(1))].name; //waiting for load
             Reservation_station_MD[MD_reservation_station_index].Vj = "x"; //rename register name
           }else{
             Reservation_station_MD[MD_reservation_station_index].Qj = "x"; //rename register name
             Reservation_station_MD[MD_reservation_station_index].Vj = "R("+j+")"; //rename register name
           } 
-          cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+  //        cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
           if(Register_result_status[ stoi(k.substr(1))].waiting){
-            cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+  //          cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
             Reservation_station_AS[AS_reservation_station_index].Qk = Register_result_status[ stoi(k.substr(1))].FU; //LD_buffer[stoi(k.substr(1))].name; //waiting for load
             Reservation_station_AS[AS_reservation_station_index].Vk = "x"; //rename register name
           }else{
@@ -375,29 +375,29 @@ int main() {
           Reservation_station_MD[MD_reservation_station_index].Time = 0;
           Reservation_station_MD[MD_reservation_station_index].busy = true; 
           Reservation_station_MD[MD_reservation_station_index].target = reg_num;
-          cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
+   //       cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
           Register_result_status[reg_num].FU = Reservation_station_MD[MD_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
           Register_result_status[reg_num].used = true;
         }else if(is.op.compare("ADD")==0){
-          cout << op <<"   =============================="<<'\n';
+   //       cout << op <<"   =============================="<<'\n';
           AS_reservation_station_index = find_empty_AS_reservation_station_entry(Reservation_station_AS);
           Reservation_station_AS[AS_reservation_station_index].issue = is.issue;
           Reservation_station_AS[AS_reservation_station_index].Op = op;
-          cout << "j : "<< j  <<"stoi(j.substr(1)) : " <<stoi(j.substr(1))<<"look over here"<<'\n';
+  //        cout << "j : "<< j  <<"stoi(j.substr(1)) : " <<stoi(j.substr(1))<<"look over here"<<'\n';
           Reservation_station_AS[AS_reservation_station_index].j = stoi(j.substr(1));
           Reservation_station_AS[AS_reservation_station_index].k = stoi(k.substr(1));
-          cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+   //       cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
           if(Register_result_status[ stoi(j.substr(1))].waiting){
-            cout << "reg is waiting  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+   //         cout << "reg is waiting  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
             Reservation_station_AS[AS_reservation_station_index].Qj = Register_result_status[ stoi(j.substr(1))].FU;//LD_buffer[stoi(j.substr(1))].name; //waiting for load
             Reservation_station_AS[AS_reservation_station_index].Vj = "x"; //rename register name
           }else{
             Reservation_station_AS[AS_reservation_station_index].Qj = "x"; //rename register name
             Reservation_station_AS[AS_reservation_station_index].Vj =  Register_result_status[ stoi(j.substr(1))].FU; 
           }    
-          cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+   //       cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
           if(Register_result_status[ stoi(k.substr(1))].waiting){
-            cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+   //         cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
             Reservation_station_AS[AS_reservation_station_index].Qk = Register_result_status[ stoi(k.substr(1))].FU;//LD_buffer[stoi(k.substr(1))].name; //waiting for load
             Reservation_station_AS[AS_reservation_station_index].Vk = "x"; //rename register name
           }else{
@@ -409,7 +409,7 @@ int main() {
           Reservation_station_AS[AS_reservation_station_index].Time = 0;
           Reservation_station_AS[AS_reservation_station_index].busy = true; 
           Reservation_station_AS[AS_reservation_station_index].target = reg_num;
-          cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_AS[AS_reservation_station_index].Name <<'\n';
+   //       cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_AS[AS_reservation_station_index].Name <<'\n';
           Register_result_status[reg_num].FU = Reservation_station_AS[AS_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
           Register_result_status[reg_num].used = true;
         }
@@ -443,7 +443,7 @@ int main() {
        /*update reservation station contents*/
        
        for(int i = 0 ; i < 3; i ++){//update j for AS
-          cout << "Reservation_station_AS[i].j : "<<Reservation_station_AS[i].j<<'\n';
+   //       cout << "Reservation_station_AS[i].j : "<<Reservation_station_AS[i].j<<'\n';
           if(Reservation_station_AS[i].busy == true){
             if(Register_result_status[ Reservation_station_AS[i].j].waiting){
               Reservation_station_AS[i].Vj = "x";
@@ -548,7 +548,7 @@ int main() {
             cout << "ADD[" << Reservation_station_AS[i].id + 1 << "]: "<< Reservation_station_AS[i].Op<< "D " << Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< "Time: "<< Reservation_station_AS[i].Time <<'\n';
           }
        }
-       cout<<"**************************"<<"Register_result_status[2].FU: "<<Register_result_status[2].FU<<'\n';
+       //cout<<"**************************"<<"Register_result_status[2].FU: "<<Register_result_status[2].FU<<'\n';
       for(int  i = 0; i < 2 ; i++){
           if(Reservation_station_MD[i].busy == true){
             cout << "MULT[" << Reservation_station_MD[i].id + 1<< "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< "Time: "<<Reservation_station_MD[i].Time <<'\n';
@@ -564,14 +564,14 @@ int main() {
        cout<< '\n';
        //check_LD_finish( current_cycle,LD_buffer , Instruction_status);
        for(int i = 0 ;i < 3;i++){
-        cout<< i<<"current_cycle - LD_buffer[i].time = " << current_cycle - LD_buffer[i].time <<" LD["<<i<<"] busy? "<< LD_buffer[i].busy<<'\n';
+ //       cout<< i<<"current_cycle - LD_buffer[i].time = " << current_cycle - LD_buffer[i].time <<" LD["<<i<<"] busy? "<< LD_buffer[i].busy<<'\n';
         if(current_cycle - LD_buffer[i].time == 2 && LD_buffer[i].busy == true){ //check latency;
-          cout<<"execution complete !!!!!     issue:"<< LD_buffer[i].issue<<" instruction " <<Instruction_status[LD_buffer[i].issue-1].instruction<<'\n';
+ //         cout<<"execution complete !!!!!     issue:"<< LD_buffer[i].issue<<" instruction " <<Instruction_status[LD_buffer[i].issue-1].instruction<<'\n';
           LD_buffer[i].result = "M("+ LD_buffer[i].address+")";
           LD_buffer[i].busy = false;                //nolonger busy
           Instruction_status[LD_buffer[i].issue-1].Execution_complete = current_cycle;    //update instruction status
           Instruction_status[LD_buffer[i].issue-1].Wb = current_cycle + 1;
-          cout << Instruction_status[LD_buffer[i].issue-1].target<<"TTTTTTTTTTTTTTTTTTTTTTTTTTTTT"<<'\n';
+ //         cout << Instruction_status[LD_buffer[i].issue-1].target<<"TTTTTTTTTTTTTTTTTTTTTTTTTTTTT"<<'\n';
       
           Register_result_status[stoi(Instruction_status[LD_buffer[i].issue-1].target.substr(1))].FU = LD_buffer[i].result;
           Register_result_status[stoi(Instruction_status[LD_buffer[i].issue-1].target.substr(1))].waiting = LD_buffer[i].busy;
@@ -620,7 +620,7 @@ int main() {
               Register_result_status[Reservation_station_AS[i].target].FU = "M(" + Reservation_station_AS[i].Vj +")-M("+Reservation_station_AS[i].Vk+")";
             }
 
-            cout << "FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_AS[i].issue<<" finished at cycle"<< current_cycle << '\n';
+   //         cout << "FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_AS[i].issue<<" finished at cycle"<< current_cycle << '\n';
           }
        }
        for(int i = 0 ;i < 2;i++){ //MD
@@ -645,7 +645,7 @@ int main() {
             }else{//"DIV"
               Register_result_status[Reservation_station_MD[i].target].FU = "M(" + Reservation_station_MD[i].Vj +")/M("+Reservation_station_MD[i].Vk+")";
             }
-            cout <<"FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_MD[i].issue<<" finished at cycle"<< current_cycle<< "target:" << Reservation_station_MD[i].target<< '\n';
+  //          cout <<"FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_MD[i].issue<<" finished at cycle"<< current_cycle<< "target:" << Reservation_station_MD[i].target<< '\n';
           }
        }
       //don't forget to update reservation stations !!!(may also start some executions)XX-nevermind ==
