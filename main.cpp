@@ -90,6 +90,8 @@ public://Time Name Busy Op Vj Vk Qj Qk
     int j;
     int k;
     int target;
+    int start_cycle = -1;
+    int issue;
     // Constructor with default values for data members
     Reservation_station_entry_AS() {}
     Reservation_station_entry_AS(bool busy , int id) {
@@ -113,6 +115,8 @@ public://Time Name Busy Op Vj Vk Qj Qk
     int j;
     int k;
     int target;
+    int start_cycle = -1;
+    int issue;
     // Constructor with default values for data members
     Reservation_station_entry_MD() {}
     Reservation_station_entry_MD(bool busy , int id) {
@@ -284,6 +288,7 @@ int main() {
         if(is.op.compare("MUL")==0){
           cout << op <<"   =============================="<<'\n';
           MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
+          Reservation_station_MD[MD_reservation_station_index].issue = is.issue;
           Reservation_station_MD[MD_reservation_station_index].Op = op;
           Reservation_station_MD[MD_reservation_station_index].j = stoi(j.substr(1));
           Reservation_station_MD[MD_reservation_station_index].k = stoi(k.substr(1));
@@ -306,6 +311,7 @@ int main() {
         }else if(is.op.compare("SUB")==0){
           cout << op <<"   =============================="<<'\n';
           AS_reservation_station_index = find_empty_AS_reservation_station_entry(Reservation_station_AS);
+          Reservation_station_AS[AS_reservation_station_index].issue = is.issue;
           Reservation_station_AS[AS_reservation_station_index].Op = op;
           cout << "j : "<< j  <<"stoi(j.substr(1)) : " <<stoi(j.substr(1))<<"look over here"<<'\n';
           Reservation_station_AS[AS_reservation_station_index].j = stoi(j.substr(1));
@@ -338,6 +344,7 @@ int main() {
         }else if(is.op.compare("DIV")==0){
           cout << op <<"   =============================="<<'\n';
           MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
+          Reservation_station_MD[MD_reservation_station_index].issue = is.issue;
           Reservation_station_MD[MD_reservation_station_index].Op = op;
           Reservation_station_MD[MD_reservation_station_index].j = stoi(j.substr(1));
           Reservation_station_MD[MD_reservation_station_index].k = stoi(k.substr(1));
@@ -360,10 +367,43 @@ int main() {
             Reservation_station_AS[AS_reservation_station_index].Vk =  Register_result_status[ stoi(k.substr(1))].FU; 
           }   
           //Reservation_station_MD[MD_reservation_station_index].Vk = "R("+k+")"; //rename register name
-          Reservation_station_MD[MD_reservation_station_index].Time = 10;
+          Reservation_station_MD[MD_reservation_station_index].Time = 0;
           Reservation_station_MD[MD_reservation_station_index].busy = true; 
           cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_MD[MD_reservation_station_index].Name <<'\n';
           Register_result_status[reg_num].FU = Reservation_station_MD[MD_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
+        }else if(is.op.compare("ADD")==0){
+          cout << op <<"   =============================="<<'\n';
+          AS_reservation_station_index = find_empty_AS_reservation_station_entry(Reservation_station_AS);
+          Reservation_station_AS[AS_reservation_station_index].issue = is.issue;
+          Reservation_station_AS[AS_reservation_station_index].Op = op;
+          cout << "j : "<< j  <<"stoi(j.substr(1)) : " <<stoi(j.substr(1))<<"look over here"<<'\n';
+          Reservation_station_AS[AS_reservation_station_index].j = stoi(j.substr(1));
+          Reservation_station_AS[AS_reservation_station_index].k = stoi(k.substr(1));
+          cout << "check reg  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<":::reg "+  Register_result_status[ stoi(j.substr(1))].FU+"::::"<< Register_result_status[ stoi(j.substr(1))].FU.substr(4)<<'\n';
+          if(Register_result_status[ stoi(j.substr(1))].waiting){
+            cout << "reg is waiting  :::::"<< j+"::::"<< j.substr(1)+" :::: "  << stoi(j.substr(1))<<'\n';
+            Reservation_station_AS[AS_reservation_station_index].Qj = Register_result_status[ stoi(j.substr(1))].FU;//LD_buffer[stoi(j.substr(1))].name; //waiting for load
+            Reservation_station_AS[AS_reservation_station_index].Vj = "x"; //rename register name
+          }else{
+            Reservation_station_AS[AS_reservation_station_index].Qj = "x"; //rename register name
+            Reservation_station_AS[AS_reservation_station_index].Vj =  Register_result_status[ stoi(j.substr(1))].FU; 
+          }    
+          cout << k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+          if(Register_result_status[ stoi(k.substr(1))].waiting){
+            cout << "reg is waiting  :::::"<< k+"::::"<< k.substr(1)+" :::: "  << stoi(k.substr(1))<<'\n';
+            Reservation_station_AS[AS_reservation_station_index].Qk = Register_result_status[ stoi(k.substr(1))].FU;//LD_buffer[stoi(k.substr(1))].name; //waiting for load
+            Reservation_station_AS[AS_reservation_station_index].Vk = "x"; //rename register name
+          }else{
+            Reservation_station_AS[AS_reservation_station_index].Qk = "x"; //rename register name
+            //cout<< "u left here"<<'\n';
+            Reservation_station_AS[AS_reservation_station_index].Vk =  Register_result_status[ stoi(k.substr(1))].FU; 
+          }
+         // Reservation_station_AS[AS_reservation_station_index].Vk = "R("+k+")"; //rename register name
+          Reservation_station_AS[AS_reservation_station_index].Time = 0;
+          Reservation_station_AS[AS_reservation_station_index].busy = true; 
+          Reservation_station_AS[AS_reservation_station_index].target = reg_num;
+          cout << "+++++++++++++++++++++++++++++++++"+Reservation_station_AS[AS_reservation_station_index].Name <<'\n';
+          Register_result_status[reg_num].FU = Reservation_station_AS[AS_reservation_station_index].Name ;// LD_buffer[LD_duffer_index].name;
         }
         /*MD_reservation_station_index = find_empty_MD_reservation_station_entry(Reservation_station_MD);
         Reservation_station_MD[MD_reservation_station_index].Op = op;
@@ -401,8 +441,11 @@ int main() {
               Reservation_station_AS[i].Vj = "x";
               Reservation_station_AS[i].Qj = Register_result_status[ Reservation_station_AS[i].j].FU;
             }else{
-              Reservation_station_AS[i].Vj = Register_result_status[ Reservation_station_AS[i].j].FU;
-              Reservation_station_AS[i].Qj = "x";
+              if(current_cycle<6){
+                Reservation_station_AS[i].Vj = Register_result_status[ Reservation_station_AS[i].j].FU;
+                Reservation_station_AS[i].Qj = "x";
+              }
+              
             }
           }
          
@@ -413,8 +456,11 @@ int main() {
             Reservation_station_AS[i].Vk = "x";
             Reservation_station_AS[i].Qk = Register_result_status[ Reservation_station_AS[i].k].FU;
           }else{
-            Reservation_station_AS[i].Vk = Register_result_status[ Reservation_station_AS[i].k].FU;
-            Reservation_station_AS[i].Qk = "x";
+            if(current_cycle<6){
+              Reservation_station_AS[i].Vk = Register_result_status[ Reservation_station_AS[i].k].FU;
+              Reservation_station_AS[i].Qk = "x";
+            }
+            
          }
         }
 
@@ -425,8 +471,11 @@ int main() {
             Reservation_station_MD[i].Vj = "x";
             Reservation_station_MD[i].Qj = Register_result_status[ Reservation_station_MD[i].j].FU;
           }else {
-            Reservation_station_MD[i].Vj = Register_result_status[ Reservation_station_MD[i].j].FU;
-            Reservation_station_MD[i].Qj = "x";
+            if(current_cycle<6){
+              Reservation_station_MD[i].Vj = Register_result_status[ Reservation_station_MD[i].j].FU;
+              Reservation_station_MD[i].Qj = "x";
+            }
+
           } 
         }
        }
@@ -436,11 +485,39 @@ int main() {
             Reservation_station_MD[i].Vk = "x";
             Reservation_station_MD[i].Qk = Register_result_status[ Reservation_station_MD[i].k].FU;
          }else {//if(Reservation_station_MD[i].Vk.substr(1,0).compare("R")!=0){
+           if(current_cycle< 6){
             Reservation_station_MD[i].Vk = Register_result_status[ Reservation_station_MD[i].k].FU;
             Reservation_station_MD[i].Qk = "x";
+           }
+
          }
         }
+       }
 
+       //check if we can start execution of a certain instruction
+       for(int i = 0 ; i < 3;i++){ //AS
+          if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].Qj.compare("x") == 0 && Reservation_station_AS[i].Qk.compare("x")== 0 && Reservation_station_AS[i].start_cycle == -1){//is busy and waiting for nothing and hasnt started yet
+            Reservation_station_AS[i].start_cycle = current_cycle;
+            if(Reservation_station_AS[i].Op.compare("ADD") == 0){
+                Reservation_station_AS[i].Time = 2;
+            }else if(Reservation_station_AS[i].Op.compare("SUB") == 0){
+                Reservation_station_AS[i].Time = 2;
+            }
+          }else if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].start_cycle!=-1){//decrement time
+            Reservation_station_AS[i].Time --;
+          }
+       }
+       for(int i = 0 ;i < 2;i++){ //MD
+          if(Reservation_station_MD[i].busy == true && Reservation_station_MD[i].Qj.compare("x") == 0 && Reservation_station_MD[i].Qk.compare("x")== 0 && Reservation_station_MD[i].start_cycle == -1){//is busy and waiting for nothing and hasnt started yet
+            Reservation_station_MD[i].start_cycle = current_cycle;
+            if(Reservation_station_MD[i].Op.compare("MUL") == 0){
+                Reservation_station_MD[i].Time = 10;
+            }else if(Reservation_station_MD[i].Op.compare("DIV") == 0){
+                Reservation_station_MD[i].Time = 40;
+            }
+          }else if(Reservation_station_MD[i].busy == true && Reservation_station_MD[i].start_cycle!=-1){//decrement time
+            Reservation_station_MD[i].Time --;
+          }
        }
        /* cycle snapshot section */
        cout << "---------------" << '\n';
@@ -452,13 +529,13 @@ int main() {
        }
       for(int  i = 0; i < 3 ; i++){
           if(Reservation_station_AS[i].busy == true){
-            cout << "ADD[" << Reservation_station_AS[i].id << "]: SUBD "<< Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<<'\n';
+            cout << "ADD[" << Reservation_station_AS[i].id << "]: SUBD "<< Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< "Time: "<< Reservation_station_AS[i].Time <<'\n';
           }
        }
        cout<<"**************************"<<"Register_result_status[2].FU: "<<Register_result_status[2].FU<<'\n';
       for(int  i = 0; i < 2 ; i++){
           if(Reservation_station_MD[i].busy == true){
-            cout << "MULT[" << Reservation_station_MD[i].id << "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk <<'\n';
+            cout << "MULT[" << Reservation_station_MD[i].id << "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< "Time: "<<Reservation_station_MD[i].Time <<'\n';
           }
        }
        cout << "Waiting register:";
@@ -497,10 +574,93 @@ int main() {
      }
      myfile.close();
      //myfile1.close();
+   } else cout << "Unable to open file"; 
+   /*stage 2 starts here*/
+   for(current_cycle = 7;current_cycle<17; current_cycle++){
+    //check if we can start execution of a certain instruction and update Time of each reservation station
+       for(int i = 0 ; i < 3;i++){ //AS
+          if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].Qj.compare("x") == 0 && Reservation_station_AS[i].Qk.compare("x")== 0 && Reservation_station_AS[i].start_cycle == -1){//is busy and waiting for nothing and hasnt started yet
+            Reservation_station_AS[i].start_cycle = current_cycle;
+            if(Reservation_station_AS[i].Op.compare("ADD") == 0){
+                Reservation_station_AS[i].Time = 2;
+            }else if(Reservation_station_AS[i].Op.compare("SUB") == 0){
+                Reservation_station_AS[i].Time = 2;
+            }
+          }else if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].start_cycle!=-1){//during execution decrement time
+            Reservation_station_AS[i].Time --;
+          }//else 
+          if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].Time == 0 && Reservation_station_AS[i].start_cycle != -1){//finished execution
+            Instruction_status[ Reservation_station_AS[i].issue-1].Execution_complete = current_cycle;
+            Reservation_station_AS[i].busy = false;//no longer busy
+            Register_result_status[Reservation_station_AS[i].target].waiting = false;//update register result status
+            Register_result_status[Reservation_station_AS[i].target].FU = "M()-M()";
+            cout << "FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_AS[i].issue<<" finished at cycle"<< current_cycle << '\n';
+          }
+       }
+       for(int i = 0 ;i < 2;i++){ //MD
+          if(Reservation_station_MD[i].busy == true && Reservation_station_MD[i].Qj.compare("x") == 0 && Reservation_station_MD[i].Qk.compare("x")== 0 && Reservation_station_MD[i].start_cycle == -1){//is busy and waiting for nothing and hasnt started yet
+            Reservation_station_MD[i].start_cycle = current_cycle;
+            if(Reservation_station_MD[i].Op.compare("MUL") == 0){
+                Reservation_station_MD[i].Time = 10;
+            }else if(Reservation_station_MD[i].Op.compare("DIV") == 0){
+                Reservation_station_MD[i].Time = 40;
+            }
+          }else if(Reservation_station_MD[i].busy == true && Reservation_station_MD[i].start_cycle!=-1){//decrement time
+            Reservation_station_MD[i].Time --;
+          }//else 
+          if(Reservation_station_MD[i].busy == true && Reservation_station_MD[i].Time == 0 && Reservation_station_MD[i].start_cycle!=-1){//finished execution
+            Instruction_status[ Reservation_station_MD[i].issue-1].Execution_complete = current_cycle;
+            Reservation_station_MD[i].busy = false;//no longer busy
+            cout <<"FFFFFFFFFFFFFFFF " <<"issue : "<<Reservation_station_AS[i].issue<<" finished at cycle"<< current_cycle << '\n';
+          }
+       }
+      //don't forget to update reservation stations !!!(may also start some executions)
+      for(int i = 0; i < 3; i++){
+        //those that are busy but hasnt started are waiting 
+        if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].start_cycle == -1){
+          if(Register_result_status[Reservation_station_AS[i].j].waiting == false){//no longer waiting for sth
+            Reservation_station_AS[i].Vj = Register_result_status[Reservation_station_AS[i].j].FU;
+            Reservation_station_AS[i].Qj = "x";
+          }
+        }
+        //check if some execution has statred
+        /*if(Reservation_station_AS[i].busy == true && Reservation_station_AS[i].Qj.compare("x") == 0 && Reservation_station_AS[i].Qk.compare("x")== 0 && Reservation_station_AS[i].start_cycle == -1){//is busy and waiting for nothing and hasnt started yet
+            Reservation_station_AS[i].start_cycle = current_cycle;
+            if(Reservation_station_AS[i].Op.compare("ADD") == 0){
+                Reservation_station_AS[i].Time = 2;
+            }else if(Reservation_station_AS[i].Op.compare("SUB") == 0){
+                Reservation_station_AS[i].Time = 2;
+            }
+        }*/
+      } 
+      /* cycle snapshot section */
+       cout << "---------------" << '\n';
+       cout << "Cycle " << current_cycle << '\n';
+       for(int i = 0;i < 3 ;i++){
+         if(LD_buffer[i].busy == true){
+           cout << "LOAD[" << LD_buffer[i].id << "]: "<< LD_buffer[i].address << "(" << LD_buffer[i].offset << ")(time:" <<LD_buffer[i].time <<")\n"; 
+         }
+       }
+      for(int  i = 0; i < 3 ; i++){
+          if(Reservation_station_AS[i].busy == true){
+            cout << "ADD[" << Reservation_station_AS[i].id << "]: SUBD "<< Reservation_station_AS[i].Vj<< " "<<Reservation_station_AS[i].Vk<<" " <<Reservation_station_AS[i].Qj<<" "<<Reservation_station_AS[i].Qk <<" j:"<<Reservation_station_AS[i].j<<" k:"<<Reservation_station_AS[i].k<< " Time: "<< Reservation_station_AS[i].Time <<'\n';
+          }
+       }
+       cout<<"**************************"<<"Register_result_status[2].FU: "<<Register_result_status[2].FU<<'\n';
+      for(int  i = 0; i < 2 ; i++){
+          if(Reservation_station_MD[i].busy == true){
+            cout << "MULT[" << Reservation_station_MD[i].id << "]: "<< Reservation_station_MD[i].Op<< "D " << Reservation_station_MD[i].Vj<< " "<<Reservation_station_MD[i].Vk<<" " <<Reservation_station_MD[i].Qj<<" "<<Reservation_station_MD[i].Qk<< " Time: "<<Reservation_station_MD[i].Time <<'\n';
+          }
+       }
+       cout << "Waiting register:";
+       for(int i = 0;i < 15 ; i++){
+        
+        cout <<"F"<< i <<"("<< Register_result_status[i].FU<< ") ";
+       }
+       cout<< '\n';
    }
-
-   else cout << "Unable to open file"; 
-   /*Testing section*/ 
+    /*stage 3 starts here*/
+   /*Testing section*/ /*final dump*/
     cout << '\n';
     cout <<"--------------------------------------------------"<<'\n';   
     cout << "Instruction_status contains:"<<'\n';
