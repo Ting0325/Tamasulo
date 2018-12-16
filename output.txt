@@ -1,0 +1,267 @@
+---------------
+Cycle 1
+LOAD[1]: R2+34(time:1)
+Waiting register:F6(LOAD1) 
+
+---------------
+Cycle 2
+LOAD[1]: R2+34(time:1)
+LOAD[2]: R3+45(time:2)
+Waiting register:F2(LOAD2) F6(LOAD1) 
+
+
+---------------
+Cycle 3
+LOAD[1]: R2+34(time:1)
+LOAD[2]: R3+45(time:2)
+MULT[1]: MULD x R(F4) LOAD2 x Time: 0
+Waiting register:F0(MULT1) F2(LOAD2) F6(LOAD1) 
+
+
+---------------
+Cycle 4
+LOAD[2]: R3+45(time:2)
+ADD[1]: SUBD M(R2+34) x x LOAD2 j:6 k:2Time: 0
+MULT[1]: MULD x R(F4) LOAD2 x Time: 0
+Waiting register:F0(MULT1) F2(LOAD2) F6(M(R2+34)) F8(ADD1) 
+
+
+---------------
+Cycle 5
+ADD[1]: SUBD M(R2+34) M(R3+45) x x j:6 k:2Time: 2
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 10
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(M(R2+34)) F8(ADD1) F10(MULT2) 
+
+
+---------------
+Cycle 6
+ADD[1]: SUBD M(R2+34) M(R3+45) x x j:6 k:2Time: 1
+ADD[2]: ADDD x M(R3+45) ADD1 x j:8 k:2Time: 0
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 9
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(ADD2) F8(ADD1) F10(MULT2) 
+
+---------------
+Cycle 7
+ADD[2]: ADDD M(M(R2+34))-M(M(R3+45)) M(R3+45) x x j:8 k:2 Time: 0
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 8
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(ADD2) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 8
+ADD[2]: ADDD M(M(R2+34))-M(M(R3+45)) M(R3+45) x x j:8 k:2 Time: 2
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 7
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(ADD2) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 9
+ADD[2]: ADDD M(M(R2+34))-M(M(R3+45)) M(R3+45) x x j:8 k:2 Time: 1
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 6
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(ADD2) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 10
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 5
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 11
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 4
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 12
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 3
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 13
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 2
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 14
+MULT[1]: MULD M(R3+45) R(F4) x x Time: 1
+MULT[2]: DIVD x M(R2+34) MULT1 x Time: 0
+Waiting register:F0(MULT1) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 15
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 0
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 16
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 40
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 17
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 39
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 18
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 38
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 19
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 37
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 20
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 36
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 21
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 35
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 22
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 34
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 23
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 33
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 24
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 32
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 25
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 31
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 26
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 30
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 27
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 29
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 28
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 28
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 29
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 27
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 30
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 26
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 31
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 25
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 32
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 24
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 33
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 23
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 34
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 22
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 35
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 21
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 36
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 20
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 37
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 19
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 38
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 18
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 39
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 17
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 40
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 16
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 41
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 15
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 42
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 14
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 43
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 13
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 44
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 12
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 45
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 11
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 46
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 10
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 47
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 9
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 48
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 8
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 49
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 7
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 50
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 6
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 51
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 5
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 52
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 4
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 53
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 3
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 54
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 2
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 55
+MULT[2]: DIVD M(M(R3+45))*M(R(F4)) M(R2+34) x x Time: 1
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(MULT2) 
+---------------
+Cycle 56
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(M(M(M(R3+45))*M(R(F4)))/M(M(R2+34))) 
+---------------
+Cycle 57
+Waiting register:F0(M(M(R3+45))*M(R(F4))) F2(M(R3+45)) F6(M(M(M(R2+34))-M(M(R3+45)))+M(M(R3+45))) F8(M(M(R2+34))-M(M(R3+45))) F10(M(M(M(R3+45))*M(R(F4)))/M(M(R2+34))) 
+
+--------------------------------------------------
+Instruction_status contains:
+Instruction      Is      Ex      Wb      Cm      
+LW F6 34(R2)      1      3      4      5
+LW F2 45(R3)      2      4      5      6
+MUL F0 F2 F4      3      15      16      17
+SUB F8 F6 F2      4      7      8      18
+DIV F10 F0 F6      5      56      57      58
+ADD F6 F8 F2      6      10      11      59
